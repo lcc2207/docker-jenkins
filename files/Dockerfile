@@ -1,7 +1,7 @@
 FROM jenkins/jenkins:latest
 
 USER root
-RUN apt-get update && apt-get install -y python-pip
+RUN apt-get update && apt-get install -y python-pip jq
 RUN pip install scalr-ctl
 
 RUN /usr/local/bin/install-plugins.sh github
