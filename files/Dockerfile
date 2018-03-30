@@ -12,7 +12,3 @@ COPY add_admin.groovy /usr/share/jenkins/ref/init.groovy.d/add_admin.groovy
 # drop back to the regular jenkins user - good practice
 USER jenkins
 RUN scalr-ctl
-
-
-# how to run
-#docker build -t scalr-demo -f Dockerfile .; docker-compose up
