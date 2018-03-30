@@ -17,6 +17,7 @@
           - yamllint
           - jenkins-job-builder
           - scalr-ctl
+          - docker-compose
       - file:
           path: /etc/jenkins_jobs/{{ item }}
           state: directory
