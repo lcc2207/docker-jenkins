@@ -1,2 +1,4 @@
 # how to run
-#docker build -t scalr-demo -f Dockerfile .; docker-compose up
+#docker build -t demo -f Dockerfile .; docker-compose up
+
+export ansible_python_interpreter=/usr/bin/python3

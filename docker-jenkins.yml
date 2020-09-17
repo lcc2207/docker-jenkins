@@ -3,20 +3,23 @@
   become: True
   connection: local
   vars_files:
-   - vars.yml
    - jobs.yml
   tasks:
       - package: name={{item}}
         with_items:
+          - python3
           - jq
-          - python-pip
-          - openjdk-8-jdk
-      - pip: name={{item}} state=latest
+          - python3-pip
+          - java-1.8.0-openjdk
+          - gcc
+      - pip: name={{item}} state=latest executable=/usr/bin/pip3
         with_items:
-          - pip
           - yamllint
           - jenkins-job-builder
           - docker-compose
+      - pip: name={{item}} state=latest executable=/usr/bin/pip2.7
+        with_items:
+          - six==1.10.0
       - file:
           path: /etc/jenkins_jobs/{{ item }}
           state: directory
@@ -26,16 +29,20 @@
       - file:
           path: /opt/jenkins/
           state: directory
+          owner: ec2-user
+          group: ec2-user
       - copy:
           src: ./files/{{ item }}
           dest: /opt/jenkins/{{ item }}
+          owner: ec2-user
+          group: ec2-user
         with_items:
           - add_admin.groovy
           - Dockerfile
           - docker-compose.yml
-      - template: src="./templates/jenkins_jobs.ini.tmp" dest="/etc/jenkins_jobs/jenkins_jobs.ini" mode=0600
+      - template: src="./templates/jenkins_jobs.ini.tmp" dest="/etc/jenkins_jobs/jenkins_jobs.ini" mode=0600 owner="ec2-user"
         with_items: "{{ jobs }}"
-      - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600
+      - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600 owner="ec2-user"
         with_items: "{{ jobs }}"
       - docker_image:
            path: /opt/jenkins
