@@ -7,7 +7,7 @@ exclude=.*:manual:./development
 allow_duplicates=False
 
 [jenkins]
-user={{ jenkins_admin_username }}
-password={{ jenkins_admin_password }}
+user=admin
+password=admin
 url=http://localhost:8080
 query_plugins_info=False
