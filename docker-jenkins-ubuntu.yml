@@ -16,6 +16,7 @@
           - pip
           - yamllint
           - jenkins-job-builder
+          - scalr-ctl
           - docker-compose
       - file:
           path: /etc/jenkins_jobs/{{ item }}
@@ -26,20 +27,25 @@
       - file:
           path: /opt/jenkins/
           state: directory
+          owner: ubuntu
+          group: ubuntu
       - copy:
           src: ./files/{{ item }}
           dest: /opt/jenkins/{{ item }}
+          owner: ubuntu
+          group: ubuntu
         with_items:
           - add_admin.groovy
           - Dockerfile
           - docker-compose.yml
-      - template: src="./templates/jenkins_jobs.ini.tmp" dest="/etc/jenkins_jobs/jenkins_jobs.ini" mode=0600
+      - template: src="./templates/jenkins_jobs.ini.tmp" dest="/etc/jenkins_jobs/jenkins_jobs.ini" mode=0600 owner="ubuntu" group="ubuntu"
+      - template: src="./templates/scalr.conf.tmp" dest="/etc/jenkins_jobs/config/{{ item.name }}-conf.yml" mode=0600 owner="ubuntu" group="ubuntu"
         with_items: "{{ jobs }}"
-      - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600
+      - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600 owner="ubuntu" group="ubuntu"
         with_items: "{{ jobs }}"
       - docker_image:
            path: /opt/jenkins
-           name: jenkins
+           name: scalr-demo
       - docker_service:
           project_src: /opt/jenkins
           build: yes
