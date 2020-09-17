@@ -17,9 +17,10 @@
           - yamllint
           - jenkins-job-builder
           - docker-compose
-      - pip: name={{item}} state=latest executable=/usr/bin/pip2.7
-        with_items:
-          - six==1.10.0
+          # - docker-py
+      # - pip: name={{item}} state=latest executable=/usr/bin/pip2.7
+      #   with_items:
+      #     - six==1.10.0
       - file:
           path: /etc/jenkins_jobs/{{ item }}
           state: directory
@@ -44,19 +45,37 @@
         with_items: "{{ jobs }}"
       - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600 owner="ec2-user"
         with_items: "{{ jobs }}"
-      - docker_image:
-           path: /opt/jenkins
-           name: bhjenkins
-      - docker_service:
-          project_src: /opt/jenkins
-          build: yes
-        register: output
-      - wait_for:
-          host: 0.0.0.0
-          port: 8080
-          delay: 10
-      - command: /usr/local/bin/jenkins-jobs update {{item}}
-        with_fileglob:
-          - /etc/jenkins_jobs/jobs/*.yml
-        register: output
-      - debug: var=output
+      # - docker_image:
+      #      path: /opt/jenkins
+      #      name: bhjenkins
+      # - docker_service:
+      #     project_src: /opt/jenkins
+      #     build: yes
+      #   register: output
+      # - wait_for:
+      #     host: 0.0.0.0
+      #     port: 8080
+      #     delay: 10
+      - docker_compose:
+        project_name: bhjenkins
+        definition:
+            jenkins:
+              image: bhjenkins:latest
+              container_name: jenkins
+              user: jenkins
+              volumes:
+                - /opt/jenkins/:/var/jenkins_home
+                - /opt/jenkins/var/run/docker.sock:/var/run/docker.sock
+                - /etc/jenkins_jobs/:/etc/jenkins_jobs
+              environment:
+                JAVA_OPTS: "-Dhudson.Main.development=true -Djenkins.install.runSetupWizard=false"
+              ports:
+                - "8080:8080"
+                - "5000:5000"
+                - "50000:50000"
+
+      # - command: /usr/local/bin/jenkins-jobs update {{item}}
+      #   with_fileglob:
+      #     - /etc/jenkins_jobs/jobs/*.yml
+      #   register: output
+      # - debug: var=output
