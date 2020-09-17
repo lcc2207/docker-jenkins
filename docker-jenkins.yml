@@ -39,7 +39,7 @@
         with_items: "{{ jobs }}"
       - docker_image:
            path: /opt/jenkins
-           name: jenkins
+           name: bhjenkins
       - docker_service:
           project_src: /opt/jenkins
           build: yes

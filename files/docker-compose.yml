@@ -1,7 +1,7 @@
 version: '2'
 services:
   jenkins:
-    image: scalr-demo:latest
+    image: bhjenkins:latest
     container_name: jenkins
     user: jenkins
     volumes:
