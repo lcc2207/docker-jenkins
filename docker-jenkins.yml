@@ -12,7 +12,7 @@
           - python3-pip
           - java-1.8.0-openjdk
           - gcc
-      - pip: name={{item}} state=latest executable=/usr/bin/pip3
+      - pip: name={{item}} state=latest executable=/usr/bin/pip3.8
         with_items:
           - yamllint
           - jenkins-job-builder
