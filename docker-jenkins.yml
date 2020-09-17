@@ -45,28 +45,14 @@
         with_items: "{{ jobs }}"
       - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600 owner="ec2-user"
         with_items: "{{ jobs }}"
-      - name: install_docker-compose
-             command: curl -L "https://github.com/docker/compose/releases/download/1.27.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-      - command: chmod +x /usr/local/bin/docker-compose
-      - docker_compose:
-        project_name: bhjenkins
-        definition:
-            jenkins:
-              image: bhjenkins:latest
-              container_name: jenkins
-              user: jenkins
-              volumes:
-                - /opt/jenkins/:/var/jenkins_home
-                - /opt/jenkins/var/run/docker.sock:/var/run/docker.sock
-                - /etc/jenkins_jobs/:/etc/jenkins_jobs
-              environment:
-                JAVA_OPTS: "-Dhudson.Main.development=true -Djenkins.install.runSetupWizard=false"
-              ports:
-                - "8080:8080"
-                - "5000:5000"
-                - "50000:50000"
-      # - command: /usr/local/bin/jenkins-jobs update {{item}}
-      #   with_fileglob:
-      #     - /etc/jenkins_jobs/jobs/*.yml
-      #   register: output
-      # - debug: var=output
+      - name: Install docker-compose
+        get_url:
+          url : https://github.com/docker/compose/releases/download/1.27.3/docker-compose-Linux-x86_64
+          dest: /usr/local/bin/docker-compose
+          mode: 'u+x,g+x'
+      - command: /usr/local/bin/docker-compose build
+        args:
+         chdir: /opt/jenkins/
+      - command: /usr/local/bin/docker-compose up -d
+        args:
+         chdir: /opt/jenkins/ 
