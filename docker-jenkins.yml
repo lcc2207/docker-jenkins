@@ -45,17 +45,9 @@
         with_items: "{{ jobs }}"
       - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600 owner="ec2-user"
         with_items: "{{ jobs }}"
-      # - docker_image:
-      #      path: /opt/jenkins
-      #      name: bhjenkins
-      # - docker_service:
-      #     project_src: /opt/jenkins
-      #     build: yes
-      #   register: output
-      # - wait_for:
-      #     host: 0.0.0.0
-      #     port: 8080
-      #     delay: 10
+      - name: install_docker-compose
+             command: curl -L "https://github.com/docker/compose/releases/download/1.27.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      - command: chmod +x /usr/local/bin/docker-compose
       - docker_compose:
         project_name: bhjenkins
         definition:
@@ -73,7 +65,6 @@
                 - "8080:8080"
                 - "5000:5000"
                 - "50000:50000"
-
       # - command: /usr/local/bin/jenkins-jobs update {{item}}
       #   with_fileglob:
       #     - /etc/jenkins_jobs/jobs/*.yml
