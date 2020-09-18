@@ -14,4 +14,4 @@ export ansible_python_interpreter=/usr/bin/python3
 pip3 install ansible
 
 # run ansible
-ansible-playbook docker-jenkins
+ansible-playbook docker-jenkins.yml
