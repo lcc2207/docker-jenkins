@@ -5,6 +5,11 @@
   vars_files:
    - jobs.yml
   tasks:
+      - name: Add Doker repository
+        yum_repository:
+          name: docker
+          description: docker YUM repo
+          baseurl: https://download.docker.com/linux/centos/docker-ce.repo
       - package: name={{item}}
         with_items:
           - python3
@@ -12,11 +17,10 @@
           - python3-pip
           - java-1.8.0-openjdk
           - gcc
-      - pip: name=jenkins-job-builder state=latest executable=/usr/bin/pip3          
-#       - pip: name={{item}} state=latest executable=/usr/bin/pip3
-#         with_items:
-#           - yamllint
-#           - jenkins-job-builder
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+      - pip: name=jenkins-job-builder state=latest executable=/usr/bin/pip3
       - file:
           path: /etc/jenkins_jobs/{{ item }}
           state: directory
