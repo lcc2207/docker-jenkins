@@ -8,7 +8,6 @@
       - command: yum -y install {{item}}
         with_items:
           - python3
-          - jq
           - python3-pip
           - java-1.8.0-openjdk
           - gcc
