@@ -12,6 +12,7 @@ export ansible_python_interpreter=/usr/bin/python3
 
 # install ansible
 pip3 install ansible
+pip3 install selinux
 
 # run ansible
-ansible-playbook docker-jenkins.yml
+ansible-playbook ./docker-jenkins/docker-jenkins.yml
