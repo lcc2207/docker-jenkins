@@ -13,6 +13,7 @@
           - gcc
           - docker
       - pip: name=jenkins-job-builder state=latest executable=/usr/bin/pip3
+      - pip: name=selinux state=latest executable=/usr/bin/pip3
       - file:
           path: /etc/jenkins_jobs/{{ item }}
           state: directory
@@ -37,6 +38,7 @@
         with_items: "{{ jobs }}"
       - template: src="./templates/jenkins_job.tmp" dest="/etc/jenkins_jobs/jobs/{{item.name}}.yml" mode=0600 owner="ec2-user"
         with_items: "{{ jobs }}"
+      - command: systemctl start docker
       - name: Install docker-compose
         get_url:
           url : https://github.com/docker/compose/releases/download/1.27.3/docker-compose-Linux-x86_64
@@ -48,6 +50,7 @@
       - command: /usr/local/bin/docker-compose up -d
         args:
          chdir: /opt/jenkins/
+      -   wait_for: port=8080 delay=10
       - command: /usr/local/bin/jenkins-jobs update {{item}}
         with_fileglob:
           - /etc/jenkins_jobs/jobs/*.yml
