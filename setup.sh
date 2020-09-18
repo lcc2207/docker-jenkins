@@ -11,7 +11,7 @@ cd docker-jenkins
 export ansible_python_interpreter=/usr/bin/python3
 
 # install ansible
-pip install ansible
+pip3 install ansible
 
 # run ansible
-ansible-playbook
+ansible-playbook docker-jenkins
