@@ -1,11 +1,17 @@
 #!/bin/bash
+yum install python3 python3-pip git -y
 
-apt update
-apt install -y python-pip
+# git clone the code
+git clone https://github.com/lcc2207/docker-jenkins.git
+
+# move to the code folder
+cd docker-jenkins
+
+# ansible to use python3
+export ansible_python_interpreter=/usr/bin/python3
 
 # install ansible
 pip install ansible
 
-# install docker_image
-curl -fsSL https://get.docker.com/ | sh
-service docker start || systemctl start docker
+# run ansible
+ansible-playbook
